@@ -4,12 +4,10 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 export default function loginPage() {
-
   const [email, setEmail] = useState("Your email");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-
 
   /*
 function handleEmailChange(e){
@@ -18,87 +16,34 @@ function handleEmailChange(e){
 }
 */
 
-
   function handleLogin() {
     console.log("Login button clicked");
 
+    axios
+      .post(import.meta.env.VITE_BACKEND_URL + "/api/users/login", {
+        email: email,
+        password: password,
+      })
+      .then((res) => {
+        console.log(res.data);
 
-    axios.post(import.meta.env.VITE_BACKEND_URL + "/api/users/login", {
-      email: email,
-      password: password
-    }).then((res) => {
-      console.log(res.data);
+        if (res.data.user == null) {
+          toast.error("Invalid Credentials");
 
-      if (res.data.user == null) {
+          return;
+        }
 
-        toast.error("Invalid Credentials");
+        // Save user data to local storage
 
+        localStorage.setItem("token", res.data.token);
 
-        return;
-      }
-
-
-
-      // Save user data to local storage
-
-      localStorage.setItem("token", res.data.token);
-
-
-      if (res.data.user.type == "admin") {
-        window.location.href = "/admin";
-      }
-      else {
-        window.location.href = "/";
-      }
-
-
-
-
-
-
-
-    })
-
-
-
+        if (res.data.user.type == "admin") {
+          window.location.href = "/admin";
+        } else {
+          window.location.href = "/";
+        }
+      });
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   return (
     <div className="main flex justify-center items-center w-full h-screen bg-red-900">
@@ -115,17 +60,21 @@ function handleEmailChange(e){
         />
 
         <span>Password</span>
-        <input type="password" name="" id="" defaultValue={password} onChange={
-          (e) => {
+        <input
+          type="password"
+          name=""
+          id=""
+          defaultValue={password}
+          onChange={(e) => {
             setPassword(e.target.value);
             // console.log(password);
-          }
-        }
+          }}
         />
 
-        <button className="bg-white" onClick={handleLogin}>Login</button>
+        <button className="bg-white" onClick={handleLogin}>
+          Login
+        </button>
       </div>
     </div>
   );
 }
-
