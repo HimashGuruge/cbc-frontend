@@ -11,7 +11,7 @@ export default function AdminProductPage() {
   useEffect(() => {
     if (!productsLoaded) {
       axios
-        .get(import.meta.env.VITE_BACKEND_URL + "/api/products")
+        .get("cbc-backend-daac.up.railway.app/api/products")
         .then((res) => {
           setProducts(res.data);
           console.log(res.data);
